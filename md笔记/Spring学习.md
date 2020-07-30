@@ -753,6 +753,231 @@ WebMvcConfigurer.addInterceptors()增加拦截的切入点
 
 
 
+# 访问Web资源
+
+### RestTemplate
+
+​			***RestTemplatebuilder.build()***
+
+```java
+{
+		URI uri = UriComponentsBuilder
+				.fromUriString("http://localhost:8080/coffee/{id}")
+				.build(1);
+		ResponseEntity<Coffee> c = restTemplate.getForEntity(uri, Coffee.class);
+		log.info("Response Status: {}, Response Headers: {}", c.getStatusCode(), c.getHeaders().toString());
+		log.info("Coffee: {}", c.getBody());
+
+		String coffeeUri = "http://localhost:8080/coffee/";
+		Coffee request = Coffee.builder()
+				.name("Americano")
+				.price(BigDecimal.valueOf(25.00))
+				.build();
+		Coffee response = restTemplate.postForObject(coffeeUri, request, Coffee.class);
+		log.info("New Coffee: {}", response);
+
+		String s = restTemplate.getForObject(coffeeUri, String.class);
+		log.info("String: {}", s);
+	}
+```
+
+
+
+通过 ***RequestEntity*** 来改变请求的head
+
+***restTemplate.exchange***
+
+**demo**：complex-resttemplate-demo
+
+
+
+### 定制RestTemplate
+
+***ConnectionKeepAliveStrategy***
+
+实现keepAliveStrategy的策略
+
+**demo**：advanced-resttemplate-demo
+
+```java
+{
+    /**
+     * 如果未设置 timeout 则永久生效，及无法设置default_seconds
+     */
+    return Arrays.asList(response.getHeaders(HTTP.CONN_KEEP_ALIVE))
+            .stream()
+            .filter(h -> StringUtils.equalsIgnoreCase(h.getName(), "timeout")
+                    && StringUtils.isNumeric(h.getValue()))
+            .findFirst()
+            .map(h -> NumberUtils.toLong(h.getValue(), DEFAULT_SECONDS))
+            .orElse(DEFAULT_SECONDS) * 1000;
+}
+```
+
+
+
+
+
+###Reactive WebClient
+
+​																																																		pom：WebFlux
+
+toStream()	block的操作
+
+**demo**：webclient-demo
+
+
+
+
+
+# Web进阶
+
+###RSETful Web Service
+
+* **客户端** 和 **服务端** 的	不同考虑点
+
+* 构建更好的URL
+* URI和HTTP结合使用
+
+
+
+http错误码
+
+https://www.runoob.com/http/http-status-codes.html
+
+
+
+表述（返回？）
+
+Json/XML/HTML/Protobuf
+
+
+
+
+
+###HATEOAS
+
+表述中可以提供各种链接
+
+超链接服务
+
+
+
+
+
+### Spring Data REST
+
+服务端
+
+**demo**：hateoas-waiter-service
+
+
+
+客户端
+
+**demo**：hateoas-customer-service
+
+功能太过于强大
+
+
+
+
+
+###分布式环境中的session问题
+
+Spring Session
+
+***HttpSession***
+
+***SessionRepositoryFilter***
+
+Redis中保存应用的session信息，重启应用后可以重用对应的缓存
+
+
+
+### WebFlux
+
+* 非阻塞式web应用
+* 函数式编程
+
+基于Netty来实现
+
+
+
+返回值：Monno<T>/ Flux<T> <p ></p>
+
+**demo**：webflux-waiter-service
+
+```java
+package geektime.spring.springbucks.waiter.repository;
+
+import geektime.spring.springbucks.waiter.model.Coffee;
+import geektime.spring.springbucks.waiter.model.CoffeeOrder;
+import geektime.spring.springbucks.waiter.model.OrderState;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.r2dbc.function.DatabaseClient;
+import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+
+@Repository
+public class CoffeeOrderRepository {
+    @Autowired
+    private DatabaseClient databaseClient;
+
+    public Mono<CoffeeOrder> get(Long id) {
+        return databaseClient.execute()
+                .sql("select * from t_order where id = " + id)
+                .map((r, rm) ->
+                            CoffeeOrder.builder()
+                                    .id(id)
+                                    .customer(r.get("customer", String.class))
+                                    .state(OrderState.values()[r.get("state", Integer.class)])
+                                    .createTime(r.get("create_time", Date.class))
+                                    .updateTime(r.get("update_time", Date.class))
+                                    .items(new ArrayList<Coffee>())
+                                    .build()
+                )
+                .first()
+                .flatMap(o ->
+                        databaseClient.execute()
+                                .sql("select c.* from t_coffee c, t_order_coffee oc " +
+                                    "where c.id = oc.items_id and oc.coffee_order_id = " + id)
+                                .as(Coffee.class)
+                                .fetch()
+                                .all()
+                                .collectList()
+                                .flatMap(l -> {
+                                    o.getItems().addAll(l);
+                                    return Mono.just(o);
+                                })
+                );
+    }
+
+    public Mono<Long> save(CoffeeOrder order) {
+        return databaseClient.insert().into("t_order")
+                .value("customer", order.getCustomer())
+                .value("state", order.getState().ordinal())
+                .value("create_time", new Timestamp(order.getCreateTime().getTime()))
+                .value("update_time", new Timestamp(order.getUpdateTime().getTime()))
+                .fetch()
+                .first()
+                .flatMap(m -> Mono.just((Long) m.get("ID")))
+                .flatMap(id -> Flux.fromIterable(order.getItems())
+                        .flatMap(c -> databaseClient.insert().into("t_order_coffee")
+                                .value("coffee_order_id", id)
+                                .value("items_id", c.getId())
+                                .then()).then(Mono.just(id)));
+    }
+}
+```
+
+
+
 ----
 
 # PS
