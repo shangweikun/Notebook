@@ -299,6 +299,8 @@ delete Object.prototype; // 这将引发错误
 
 字符串 "eval" 不可用作变量：
 
+https://www.w3school.com.cn/jsref/jsref_eval.asp
+
 ```javascript
 "use strict";
 var eval = 3.14;         // 这将引发错误
@@ -316,6 +318,8 @@ var arguments = 3.14;    // 这将引发错误
 
 
 with 语句是不允许的：
+
+https://www.w3school.com.cn/js/pro_js_statements_with.asp
 
 ```javascript
 "use strict";
