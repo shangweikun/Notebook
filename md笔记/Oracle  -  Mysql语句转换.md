@@ -16,14 +16,14 @@
 | ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | 1    | NUMBER                                                       | int / DECIMAL                                                | DECIMAL就是NUMBER(10,2)这样的结构INT就是是NUMBER(10)，表示整型； MYSQL有很多类int型，tinyint mediumint bigint等，不同的int宽度不一样 |
 | 2    | Varchar2（n）                                                | varchar(n)                                                   |                                                              |
-| 3    | Date                                                         | DATATIME                                                     | 日期字段的处理 MYSQL日期字段分DATE和TIME两种，ORACLE日期字段只有DATE，包含年月日时分秒信息，用当前数据库的系统时间为 SYSDATE, 精确到秒，或者用字符串转换成日期型函数TO_DATE(‘2001-08-01’,’YYYY-MM-DD’)年-月-日 24小时:分钟:秒的格式YYYY-MM-DD HH24:MI:SS TO_DATE()还有很多种日期格式, 可以参看ORACLE DOC.日期型字段转换成字符串函数TO_CHAR(‘2001-08-01’,’YYYY-MM-DD HH24:MI:SS’)  日期字段的数学运算公式有很大的不同。<br>MYSQL找到离当前时间7天用DATE_FIELD_NAME ＞ SUBDATE（NOW（），INTERVAL 7 DAY）ORACLE找到离当前时间7天用 DATE_FIELD_NAME ＞SYSDATE - 7; <br>MYSQL中插入当前时间的几个函数是：NOW()函数以`'YYYY-MM-DD HH:MM:SS'返回当前的日期时间，可以直接存到DATETIME字段中。<br>CURDATE()以’YYYY-MM-DD’的格式返回今天的日期，可以直接存到DATE字段中。<br>CURTIME()以’HH:MM:SS’的格式返回当前的时间，可以直接存到TIME字段中。<br>例：insert into tablename (fieldname) values (now())  而oracle中当前时间是sysdate |
+| 3    | Date                                                         | DATA，TIME                                                   | 日期字段的处理 MYSQL日期字段分DATE和TIME两种，ORACLE日期字段只有DATE，包含年月日时分秒信息，用当前数据库的系统时间为 SYSDATE, 精确到秒，或者用字符串转换成日期型函数TO_DATE(‘2001-08-01’,’YYYY-MM-DD’)年-月-日 24小时:分钟:秒的格式YYYY-MM-DD HH24:MI:SS TO_DATE()还有很多种日期格式, 可以参看ORACLE DOC.日期型字段转换成字符串函数TO_CHAR(‘2001-08-01’,’YYYY-MM-DD HH24:MI:SS’)  日期字段的数学运算公式有很大的不同。<br>MYSQL找到离当前时间7天用DATE_FIELD_NAME ＞ SUBDATE（NOW（），INTERVAL 7 DAY）ORACLE找到离当前时间7天用 DATE_FIELD_NAME ＞SYSDATE - 7; <br>MYSQL中插入当前时间的几个函数是：NOW()函数以'YYYY-MM-DD HH:MM:SS'返回当前的日期时间，可以直接存到DATETIME字段中。<br>CURDATE()以’YYYY-MM-DD’的格式返回今天的日期，可以直接存到DATE字段中。<br>CURTIME()以’HH:MM:SS’的格式返回当前的时间，可以直接存到TIME字段中。<br>例：insert into `tablename` (`fieldname`) values (now())  而oracle中当前时间是sysdate |
 | 4    | INTEGER                                                      | int / INTEGER                                                | Mysql中INTEGER等价于int                                      |
 | 5    | EXCEPTION                                                    | SQLEXCEPTION                                                 | 详见<<2009001-eService-O2MG.doc>>中2.5 Mysql异常处理         |
 | 6    | CONSTANT VARCHAR2(1)                                         | mysql中没有CONSTANT关键字                                    | 从ORACLE迁移到MYSQL,所有CONSTANT常量只能定义成变量           |
 | 7    | TYPE `g_grp_cur` IS REF CURSOR;                              | 光标 : mysql中有替代方案                                     | 详见<<2009001-eService-O2MG.doc>>中2.2 光标处理              |
 | 8    | TYPE `unpacklist_type` IS TABLE OF VARCHAR2(2000) INDEX BY BINARY_INTEGER; | 数组: mysql中借助临时表处理 或者直接写逻辑到相应的代码中， 直接对集合中每个值进行相应的处理 | 详见<<2009001-eService-O2MG.doc>>中2.4 数组处理              |
 | 9    | 自动增长的序列                                               | 自动增长的数据类型                                           | MYSQL有自动增长的数据类型，插入记录时不用操作此字段，会自动获得数据值。ORACLE没有自动增长的数据类型，需要建立一个自动增长的序列号，插入记录时要把序列号的下一个值赋于此字段。 |
-| 0    | NULL                                                         | NULL                                                         | 空字符的处理 MYSQL的非空字段也有空的内容，ORACLE里定义了非空字段就不容许有空的内容。<br>按MYSQL的NOT NULL来定义ORACLE表结构, 导数据的时候会产生错误。<br>因此导数据时要对空字符进行判断，如果为NULL或空字符，需要把它改成一个空格的字符串。 |
+| 0    | NULL                                                         | NULL                                                         | 空字符的处理 MYSQL的非空字段也有空的内容，ORACLE里定义了非空字段就不容许有空的内容。<br>按MYSQL的NOT NULL来定义ORACLE表结构, 导数据的时候会产生错误。<br>因此导数据时要对空字符进行判断，如果为NULL或空字符，需要把它改成一个空格的字符串。<br>MySQL中null值与空字符串不等价，而在Oracle中，两者是等价的；在MySQL中匹配null和空字符串是不同的：null查询用 is null/ is not null,空字符''查询用 =''/<>'' |
 
 
 
@@ -94,6 +94,10 @@
      -- 主键索引
 
      alter table `_table_name` add constraint `index_name` primary key (`column_name`) using index tablespace `URMSPK`;
+
+    -- 唯一索引
+
+      create **unique index** `unique_index01` on `search_result_tmp` ( `deal_id` , `compare_flag` );
 
      -- 普通列索引
 
@@ -216,3 +220,85 @@
 参考：https://blog.csdn.net/huangyinzhao/article/details/80739291
 
 ​			https://www.cnblogs.com/yanyunpiaomaio/p/10821437.html
+
+
+
+
+
+## MySQL-DECIMAL
+
+MySQL `DECIMAL`数据类型用于在数据库中存储精确的数值。我们经常将`DECIMAL`数据类型用于保留准确精确度的列，例如会计系统中的货币数据。
+
+要定义数据类型为`DECIMAL`的列，请使用以下语法：
+
+```
+column_name ``DECIMAL``(P,D);
+```
+
+在上面的语法中：
+
+- `P`是表示有效数字数的精度。 `P`范围为`1〜65`。
+- `D`是表示小数点后的位数。 `D`的范围是`0`~`30`。MySQL要求`D`小于或等于(`<=`)`P`。
+
+`DECIMAL(P，D)`表示列可以存储`D`位小数的`P`位数。十进制列的实际范围取决于精度和刻度。
+
+与INT数据类型一样，`DECIMAL`类型也具有`UNSIGNED`和`ZEROFILL`属性。 如果使用`UNSIGNED`属性，则`DECIMAL UNSIGNED`的列将不接受负值。
+
+如果使用`ZEROFILL`，MySQL将把显示值填充到`0`以显示由列定义指定的宽度。 另外，如果我们对`DECIMAL`列使用`ZERO FILL`，MySQL将自动将`UNSIGNED`属性添加到列。
+
+以下示例使用`DECIMAL`数据类型定义的一个叫作`amount`的列。
+
+
+
+存储的空间大小，整数部分的占用空间如下：
+
+| Leftover Digits | Number of Bytes |
+| --------------- | --------------- |
+| 0               | 0               |
+| 1–2             | 1               |
+| 3–4             | 2               |
+| 5–6             | 3               |
+| 7–9             | 4               |
+
+占用字节数计算方法 —— 小数和整数分别计算，每9位数占4字节
+
+例如：`DECIMAL(20,6)`，整数14位，需要4字节存9位，还需3字节存5位；小数6位，需3字节。共10bytes
+
+感谢：
+
+https://www.cnblogs.com/erisen/p/5970315.html
+
+https://www.cnblogs.com/owenma/p/7097602.html
+
+
+
+
+
+
+
+## MySQL-小技巧
+
+1.比较运算符能用"!="就不用"<>"：
+"!="增加了索引的使用几率。
+2.明知只有一条查询结果，那就使用"LIMIT 1"：
+"LIMIT 1"可以避免全表扫面，找到对应结果就不会再继续扫描了。
+3.为列选择合适的数据类型
+能用TINYINT就不用SMALLINT，能用SMALLINE就不用INT，道理你懂得，磁盘和内存消耗越小越好嘛。
+4.将大的DELETE,UPDATE or INSERT查询变成多个小查询
+能写一个几十行、几百行的SQL语句是不是显得逼格很高？然而，为了达到更好的性能以及更好的数据控制，应将它们写成多个小查询。
+5.使用UNION ALL 代替 UNION,如果结果集允许重复的话。因为UNINON ALL不去重，效率高于UNION.
+6.为获得相同结果集的多次执行，请保持SQL语句前后一致。这样做的目的是为了充分利用查询缓冲。
+比如根据地域和产品ID查询产品价格，第一次使用了：
+SELECT price FROM order WHERE id='123456' and region='BEIJING'
+那么第二次同样的查询，请保持以上语句的一致性，比如不要将where语句里面的id和region位置调换顺序。
+7.尽量避免使用"SELECT \*"
+如果不查询表中的所有的列，尽量避免使用SELECT \* ，因为它会进行全表扫描，不能有效利用索引，增大了数据库服务器的负担，以及它与应用程序客户端之间的网络IO开销。
+8.WHERE子句里面的列尽量被索引
+只是”尽量“，并不是所有的列。因地制宜，根据实际情况进行调整，因为有时索引太多也会降低性能。
+9.JOIN子句里面的列尽量被索引。同样只是”尽量“，并不是说所有的列。
+10.ORDER BY 的列尽量被索引。OEDER BY的列如果被索引，性能也会更好。
+11.使用LIMIT实现分页逻辑。不仅提高了性能，同时减少了不必要的数据库和应用间的网络传输。
+12.使用EXPLAIN关键字去查看执行计划。EXPLAIN可以检查索引使用情况以及扫描的行。
+总结：SQL调优方法很多，同样的查询结果可以有很多种不同的查询方式。其实最好的方法就是在开发环境中用最贴近真实的数据集和硬件环境进行测试，然后再发布到生产环境中。
+
+https://www.yisu.com/zixun/26921.html
