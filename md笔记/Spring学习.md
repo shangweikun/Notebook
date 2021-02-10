@@ -1,6 +1,14 @@
-
-
 # Spring Boot学习
+
+Spring思考：
+
+* 本质Spring相当于是替我们做了很多对于`classes`的管理，有点EJB的感觉，可以让我们在代码中随心所欲的管理`classes`；
+
+* SpringBoot更大的简化的所谓的Spring的注解处理，让我们更加容易的使用所有的`class`，`inteface`，甚至不需要关心其内部的实现，更加简化了开发者的工作；
+
+---
+
+
 
 https://github.com/macrozheng/mall-admin-web.git
 
@@ -978,6 +986,14 @@ public class CoffeeOrderRepository {
 
 
 
+
+
+## mvn spring-boot :run 命令
+
+https://segmentfault.com/a/1190000021687878
+
+
+
 ----
 
 # PS
@@ -993,6 +1009,5 @@ public class CoffeeOrderRepository {
    <version>1.0.1</version>
 </dependency>
 ```
-
 
 

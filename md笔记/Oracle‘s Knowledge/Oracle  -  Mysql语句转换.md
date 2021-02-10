@@ -57,7 +57,7 @@
 
 
 
-* **字段修改语句**
+* ** 字段修改语句**
 
   * Oracle
 
@@ -302,3 +302,229 @@ SELECT price FROM order WHERE id='123456' and region='BEIJING'
 总结：SQL调优方法很多，同样的查询结果可以有很多种不同的查询方式。其实最好的方法就是在开发环境中用最贴近真实的数据集和硬件环境进行测试，然后再发布到生产环境中。
 
 https://www.yisu.com/zixun/26921.html
+
+
+
+
+
+
+
+# Oracle 语句学习
+
+
+
+## DECODE COMMAND
+
+The syntax for the DECODE function in Oracle/PLSQL is:
+
+```plsql
+DECODE( expression , search , result [, search , result]... [, default] )
+```
+
+参考：https://www.techonthenet.com/oracle/functions/decode.php
+
+
+
+##导入数据
+
+```plsql
+imp test/test@fealm97 file=F:\Oracle.dmp tables=lsetlist ignore=y
+
+
+imp system/manager buffer=102400000  \
+ignore=y tables=SP_WH_GWG1_17S_1S \
+fromuser=CPXOA_GDWHT touser=CPXOA_GDWHT \
+file=g:\1.dmp \
+log=G:\20150630.sp_wh_gwg1_17_1s.log
+```
+
+impdp只能对应expdp导出的命令文件
+
+1、directory需要 `create` 并 dmp文件放入其中；
+
+2、权限必须要存在；
+
+3、对应的导出的表空间也必须存在。 
+
+
+
+## 导出数据
+
+```plsql
+exp ${user}/${password}@${url} file=${filename}.dmp log=${filelogname}.log tables=${table1},${table2}
+```
+
+
+
+
+
+
+
+### Oracle
+
+# [NLSSORT](https://www.cnblogs.com/zhaochunyi/p/10898644.html)
+
+排序语句学习：
+
+```sql
+SELECT *
+  FROM test
+  ORDER BY NLSSORT(name, 'NLS_SORT = XDanish');
+```
+
+支持中文排序，9i后增加
+
+Oracle 9i开始，新增了按照拼音、部首、笔画排序功能。
+
+  通过设置NSL_SORT值来实现:
+
+  **SCHINESE_RADICAL_M** 按照部首（第一顺序）、笔划（第二顺序）排序
+
+  **SCHINESE_STROKE_M** 按照笔划（第一顺序）、部首（第二顺序）排序
+
+  **SCHINESE_PINYIN_M** 按照拼音排序
+
+
+
+实现中文排序有两种常见方式:
+
+1. **session级**
+
+   **ALTER SESSION SET NLS_SORT='XXX';**
+
+   此结果影响整个session。
+
+2. **sql级**
+
+   **SELECT \* FROM TABLE_XXX ORDER BY NLSSORT(字段名, 'NLS_SORT=XXX');**
+
+https://blog.51cto.com/baser/2139625
+
+
+
+
+
+# 建立用户
+
+关闭密码校验：alter profile default limit PASSWORD_VERIFY_FUNCTION null;
+
+```sql
+--建立用户：
+
+create user `username` identified by ` password`;
+
+alter user `username` identified by  `password` ; 
+
+--建立用户并制定表空间
+create user pow identified by pow
+default tablespace DATA_SPACE – 指定数据表空间用户
+temporary tablespace TEMP_SPACE; – 指定临时表空间用户
+
+
+--授予DBA权限： 
+grant connect,resource,dba to `username`;
+
+--撤销DBA权限：
+revoke connect, resource from `username`;
+
+--断开所有用户链接
+select username,sid,serial# from v$session where username = 'JEECG_TEST';
+alter system kill session '#{sid},#{serial}';  
+
+--及联删除 cascade；
+drop user jeecg_test cascade;
+```
+
+
+
+
+
+重启oracle：
+
+```sql
+shutdown immediate ;
+
+startup;
+```
+
+参考：
+
+https://blog.csdn.net/songyundong1993/article/details/81093335
+
+
+
+几个容易混乱的数据库参数概念：
+
+数据库名：db_name      
+
+数据库实例名：instance_name 
+
+操作系统环境变量：oracle_sid 
+
+数据库服务名：service_names 
+
+数据库域名：db_domain     
+
+全局数据库名：global_db_name 
+
+https://www.cnblogs.com/jichunhu/p/4063175.html
+
+
+
+疑问：PL/SQL是否会保存连接的登录缓存呢？
+
+
+
+###登录方式：
+
+sqlplus 用户名/密码@主机:端口号/SID 可选as sysdba 
+
+```
+racdb =
+   (DESCRIPTION =
+     (ADDRESS = (PROTOCOL = TCP)(HOST = 10.16.35.62)(PORT = 1521))
+     (ADDRESS = (PROTOCOL = TCP)(HOST = 10.16.35.63)(PORT = 1521))
+     (LOAD_BALANCE = yes)      //开启负载
+     (CONNECT_DATA =
+       (SERVER = DEDICATED)		//专用服务器，一个客户端连接对应一个服务器进程
+       (SERVICE_NAME = racdb)   //对应数据库的服务名
+       (FAILOVER_MODE =      //连接失败后处理的方式 
+            (TYPE = session) //TYPE =SESSION表示当一个连接好的会话的实例发生故障，系统会自动将会话切换到其他可用的实例，前台应用无须再度发起连接，但会话正在执行的SQL 需要重新执行
+            (METHOD = basic) //表示初始连接就连接一个接点 
+            (RETRIES = 180)  //连接失败后重试连接的次数 
+            (DELAY = 5)    //连接失败后重试的延迟时间(以秒为单位)
+       )
+     )
+ )
+```
+
+
+
+###数据迁移的基本步骤 - 实战
+
+oracle中接受参数&1
+
+问题：&1.的接收参数和&1一样的原因
+
+解答：https://stackoverflow.com/questions/17051928/what-does-1-mean-in-oracle-database
+
+
+
+
+
+##Oracle 语句create table as 与create table like 的区别
+
+##### 相同点：
+
+​	都是创建一个新表
+
+##### 不同点
+
+- create table as 只是复制原数据，其实就是把查询的结果建一个表
+- create table like 产生与源表相同的表结构，包括索引和主键，数据需要用insert into 语句复制进去。例如：
+
+```sql
+create table newtest like test；
+insert into newtest select * from test；
+```
+

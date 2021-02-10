@@ -2,6 +2,57 @@
 
 
 
+## 日常问题汇总
+
+
+
+#### TEMPORARY TABLE
+
+mysql 的临时表：一个连接对应一个单独的`临时表`；
+
+https://dev.mysql.com/doc/refman/8.0/en/create-temporary-table.html
+
+​				**ps**：同时一个select或者一个存储过程中不能重复开启`TEMPORARY`表
+
+
+
+
+
+###MySql的递归查询方式
+
+```sql
+CREATE DEFINER=`root`@`localhost` PROCEDURE `findtestList`(testId INT)
+    COMMENT '递归查询'
+BEGIN
+  DECLARE v_test INT DEFAULT null;
+  DECLARE done INTEGER DEFAULT 0;
+    -- 查询结果放入游标中
+  DECLARE C_test CURSOR FOR SELECT d.c2
+                           FROM demo d
+                           WHERE d.c2_up = testId;
+  DECLARE CONTINUE HANDLER FOR NOT found SET done=1;
+  SET @@max_sp_recursion_depth = 10;
+    
+    -- 传入的组织id写入临时表
+  INSERT INTO demo_tmp VALUES (testId);
+  OPEN C_test;
+  FETCH C_test INTO v_test;
+  WHILE (done=0)
+  DO
+        -- 递归调用，查找下级
+    CALL findtestList(v_test);
+    FETCH C_test INTO v_test;
+  END WHILE;
+  CLOSE C_test;
+END
+```
+
+https://blog.csdn.net/qq_43303221/article/details/99435596
+
+https://juejin.im/post/6844904022462185485
+
+
+
 # 常用语句
 
 ```sql
@@ -195,3 +246,26 @@ MySQL中有自定义的超时设置参数：***\*innodb_lock_wait_timeout\****(�
 #### 控制并法度
 
 修改MySql的源码，在进入InnoDB引擎前进行排队，强制减少并发程度
+
+
+
+
+
+
+
+# MySql Cluster
+
+
+
+
+
+
+
+
+
+#Mysql function｜produce
+
+###Error_1
+
+1418 - This function has none of DETERMINISTIC, NO SQL, or READS SQL DATA in its declaration and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable)
+

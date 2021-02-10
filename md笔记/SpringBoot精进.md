@@ -233,6 +233,10 @@ Spring Boot通过Starter可以简化对应的依赖，更加方便开发者工�
 
 # SpringBoot启动原理
 
+<a href="https://edu.aliyun.com/course/1912/lesson/list?spm=5176.8764728.aliyun-edu-course-tab.2.fef47133extcOY&previewAs=guest ">视频课程链接</a>
+
+
+
 重要的事件回调机制
 
 **ApplicationContextInitializer**
@@ -379,4 +383,6 @@ static WebApplicationType deduceFromClasspath() {
 		return context;
 	}
 ```
+
+
 
