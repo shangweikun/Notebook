@@ -169,3 +169,268 @@ public static Collector<Object, ArrayList<Object>, ArrayList<AExtend>> collector
 
  
 
+
+
+
+
+##*第七章
+
+###并行流
+
+​	并行流本质使用的多线程是使用的ForkJoinPool的所提供的线程池
+
+PS：一旦涉及并行流操作，一定要保证操作的原子性；
+
+错误示例：
+
+```java
+package com.example.SpringWeb.java8demo.capter7;
+
+import java.util.stream.LongStream;
+
+public class Demo {
+
+	/**
+	 * Demo有一个静态成员，Accumulator的静态内部类，在堆上分配的
+	 */
+	static class Accumulator {
+		public long total = 0;
+
+		public void add(long value) {
+			total += value;
+		}
+	}
+
+	public static void main(String[] args) {
+		Accumulator accumulator = new Demo.Accumulator();
+		LongStream.rangeClosed(0L, 100000L).parallel().forEach(accumulator::add);
+		System.out.println(accumulator.total);
+	}
+}
+
+```
+
+并行流使用要考虑到很多：注重实际中的 ***测量***，***装箱***
+
+
+
+本质
+
+### 分治/合并框架
+
+本质的使用 ***类*** 包括一下三种
+
+* ForkJoinPool
+* ForkJoinTask
+* RecursiveTask
+
+
+
+内部使用 ***工作窃取*** 算法，来保证任务的平均分配
+
+
+
+####并行的Iterrator接口 - Spliterator
+
+* tryAdvance传递Consumer
+
+* trySplit 是关键
+* estimatedSize 估计长度
+* characteristic Spliterator的类型 返回一个int型
+
+
+
+
+
+# *第八章
+
+***lambda***表达式应用在设计模式上，可以达到节约代码的效果，同时可以很好的改善设计模式僵化的问题
+
+为了更好的使用***lambda***表达式，需要将复杂的表达式单独抽出来，通过**方法引用**的方式去调用
+
+​	- 这样能方便我们查找堆栈错误
+
+
+
+
+
+#*第九章
+
+不同类型的兼容：
+
+* 二进制：程序在JRE环境下，不重新编译，不影响其运行（即链接和运行不受影响）
+* 源代码：程序在不修改情况下，可以正常编译
+* 函数行为：程序在进行同样的输入情况，能得到同样的结果
+
+
+
+### 默认方法的使用
+
+默认方法的引入，导致了类似C++的菱形继承问题，Java通过以下三个规则对方法的使用进行规定
+
+* 类或者父类中显式声明的方法，其优先级高于一切默认方法
+
+```java
+public interface A {
+  default void hello(){
+    System.out.print("hello A");
+  }
+}
+
+public interface C extends A{
+  void hello();
+}
+```
+
+以上例子中，当有实现类D实现C时，必须要显示的添加hello方法（即A的默认方法其优先级低于C）
+
+
+
+* 如果第一条无法判断，方法签名没有区别，那么选择提供最具体实现的默认方法的借口
+
+
+
+* 最后仍无法解决冲突，只能在你的类中覆盖该默认方法，显示地指定你的类中需要使用的方法，使用 ***super*** 关键字
+
+```java
+public interface A {
+  default void hello(){
+    System.out.print("hello A");
+  }
+}
+
+public interface B {
+  default void hello(){
+    System.out.print("hello B");
+  }
+}
+
+public class D implements A,B{
+  void hello(){
+    B.super.hello();
+  }
+}
+```
+
+
+
+#*第十章
+
+* Optional替代null参数
+
+为了解决 空指针 问题，以及解决代码优雅问题，引入***Optional***
+
+```java
+package com.example.SpringWeb.java8demo.capter10;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.Optional;
+
+public class Demo {
+
+	public static class Person {
+		@Getter
+		@Setter
+		String personName;
+
+		@Getter
+		@Setter
+		Car car;
+
+		public Optional<Car> getCarAsOptional() {
+			return Optional.of(this.car);
+		}
+	}
+
+	public static class Car {
+		@Getter
+		@Setter
+		String carName;
+
+		@Getter
+		@Setter
+		Insurance insurance;
+
+		public Optional<Insurance> getInsuranceAsOptional() {
+			return Optional.of(this.insurance);
+		}
+
+
+	}
+
+	public static class Insurance {
+		@Getter
+		@Setter
+		String insName;
+	}
+
+	public static void main(String[] args) {
+		Person person1 = new Person();
+		person1.setPersonName("person1");
+		Car car1 = new Car();
+		car1.setCarName("car1");
+		Insurance insurance1 = new Insurance();
+		insurance1.setInsName("insurance1");
+
+		person1.setCar(car1);
+		car1.setInsurance(insurance1);
+
+		Optional<Person> optPerson = Optional.of(person1);
+		String insName = optPerson
+				.flatMap(Person::getCarAsOptional)
+				.flatMap(Car::getInsuranceAsOptional)
+				.map(Insurance::getInsName)
+				.orElse("unknown");
+		System.out.println(insName);
+	}
+}
+```
+
+
+
+* map
+* flatMap
+* filter
+
+
+
+#*第十一章
+
+***CompletableFuture***
+
+同步转异步，将多个任务并发执行，提高效率；采用ForkJoinPool的池提供的功能；
+
+------
+
+思考：
+
+数字名片中红包使用的池
+
+1. 本质在于往核心上送时增加一个 ***线程池的队列*** 控制，保证在web容器中间件的框架下，增加一个可以由开发人员确定的最大上送核心的TPS（瞬时并发数），其本质仍为同步，并未实现所谓的异步并发功能
+
+2. 其次，任务提交需要和数据库操作放在一个事物中，保证一致性
+
+   （目前是在数据库操作之后，可能存在的问题为：队列已满，未上送核心就已经报错，但红包金额已经扣减）
+
+3. 线程池内管理的线程必须要设置为守护线程
+
+-----
+
+
+
+* thenCompose 方法
+
+  当CompletableFuture的第一个方法执行完毕后，将结果作为传入的函数参数去执行调用
+
+前后两个任务在CPU时许上仍是串行，通过同步的方式在进行执行
+
+
+
+* thenCombine｜thenCombineAsync
+
+
+
+
+
