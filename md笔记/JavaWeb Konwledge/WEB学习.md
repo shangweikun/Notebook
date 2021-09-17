@@ -224,10 +224,6 @@ https://www.wildfly.org/
 
 ### Undertow
 
-
-
-
-
 官方网站：https://undertow.io/
 
 
@@ -340,4 +336,24 @@ https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS
 ![img](https://mdn.mozillademos.org/files/13785/HTTPRedirect.png)
 
 https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Redirections
+
+
+
+
+
+# SESSION
+
+https://www.toolsqa.com/postman/cookies-in-postman/
+
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies
+
+
+
+# JDBC
+
+https://www.coder.work/article/1426608
+
+https://docs.oracle.com/cd/B10501_01/java.920/a96654/basic.htm#1006509
+
+
 

@@ -57,3 +57,37 @@ lsnrctl status
 
 ```
 
+
+
+### the PDB && ORCL (the CDB).
+
+https://stackoverflow.com/questions/33330968/error-ora-65096-invalid-common-user-or-role-name-in-oracle
+
+12c，在CDB模式下，无法创建普通用户；
+
+* 切换PDB模式
+
+```sql
+alter session set container=ORCLPDB1;
+```
+
+* 登陆(需要有创建session的权限)
+
+```sehll
+conn SWK/159951a@ORCLPDB1
+```
+
+
+
+
+
+### MAC环境 构建oracle客户端
+
+https://gowa.club/macOS/macOS%E7%94%A8HomeBrew%E5%AE%89%E8%A3%85Sqlplus.html
+
+```shell
+brew tap InstantClientTap/instantclient
+brew install instantclient-basic
+brew install instantclient-sqlplus
+```
+

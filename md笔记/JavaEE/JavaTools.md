@@ -1,5 +1,3 @@
-
-
 ## java命令工具
 
 ### jmod
@@ -55,5 +53,40 @@ jar -xvf xxx.jar
 
 ```shell
 unzip xxx.jar -d 路径
+```
+
+
+
+
+
+### 打印JDK或者CGLIB动态代理的class
+
+​		System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY, "D:\\class");  --该设置用于输出cglib动态代理产生的类
+
+​		System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");   --该设置用于输出jdk动态代理产生的类或者在启动配置VM Options中设置 -Dsun.misc.ProxyGenerator.saveGeneratedFiles=true
+
+
+
+### TypeReference
+
+- Jackson ObjectMapper 提供了TypeReference支持对泛型对象的反序列化；
+- 对于获取泛型类型信息的场景，TypeReference是一个可以参考的通用解决方案。
+
+
+
+TypeReference主要源码：
+
+```java
+protected TypeReference()
+    {
+        Type superClass = getClass().getGenericSuperclass();
+        _type = ((ParameterizedType) superClass).getActualTypeArguments()[0];
+    }
+```
+
+***使用实例：***
+
+```java
+List<UserResource> list = new ObjectMapper().readValue(userResourcesStr, new TypeReference<List<UserResource>>(){});
 ```
 

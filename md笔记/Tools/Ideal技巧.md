@@ -133,3 +133,62 @@ Ideal 官方链接：https://www.jetbrains.com/help/idea/using-file-and-code-tem
 
 ##Ideal依赖本地其他项目
 
+
+
+　　1.加载主项目A（选择import project）
+
+　　　　![img](https://oscimg.oschina.net/oscnet/6ce0590329d116366aef52380cbad235ff1.png)
+
+　　2.选中项目（POM的上一层），一直下一步
+
+　　　 ![img](https://oscimg.oschina.net/oscnet/e5b0566999624bf867ff325bfea1e4887a8.png)
+
+ 
+
+　　3.第一个项目导入完成
+
+　　　　![img](https://oscimg.oschina.net/oscnet/1f91aecbc6cef507ae102159ebac5274de0.png)
+
+　　4.导入依赖的B项目（第二个项目）
+
+　　　　**file -- new -- module fron Existing Sources...**
+
+　　　　![img](https://oscimg.oschina.net/oscnet/de36f8f9f49d71a5b6a3ad04af7b0b46e98.png)
+
+　　　　一路ok即可
+
+　　5.B项目导入成功：
+
+　　![img](https://oscimg.oschina.net/oscnet/dec5c8f0ea4fc3749e7949de9c9f7f86bd0.png)
+
+6.配置A项目的依赖为B项目
+
+　　**6.1打开项目设置：　　file -- project Structure... 　　　　　　　　(快捷键为 ctrl+alt+shift+s)**
+
+　　**6.2选中当前项目，配置依赖，点击 “+”**
+
+　　![img](https://oscimg.oschina.net/oscnet/b5528236e8aca2d994dd6e7f750bf76ce92.png)
+
+　　 **6.3选中 module dep。。。**
+
+　　　　![img](https://img2018.cnblogs.com/blog/1652800/201904/1652800-20190404165426217-1770340810.png)
+
+ 
+
+ 　
+
+7.在弹出的列表中选中所想依赖的本地B项目 
+
+　　![img](https://oscimg.oschina.net/oscnet/9cfba4b93254232e3149ff8306df445ecf4.png)
+
+8.讲此项目在列表中的位置移动到顶部，或者删除maven依赖。
+
+　　![img](https://oscimg.oschina.net/oscnet/cba1908d77fa66c70aaf9fe385187f74ab1.png)
+
+ 
+
+　　9.配置完成，按照此方法，再进行配置B对C的依赖即可。
+
+
+
+https://my.oschina.net/u/4341235/blog/3586039

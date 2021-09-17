@@ -385,4 +385,3 @@ static WebApplicationType deduceFromClasspath() {
 ```
 
 
-

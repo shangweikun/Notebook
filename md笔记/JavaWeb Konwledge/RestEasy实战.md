@@ -360,37 +360,14 @@ private void addExceptionMapper(ExceptionMapper provider, Class providerClass, b
 ```
 
 ```java
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package org.jboss.resteasy.core.providerfactory;
 
 import org.jboss.resteasy.core.MediaTypeMap.Typed;
 import org.jboss.resteasy.spi.util.Types;
 
 public class SortedKey<T> implements Comparable<SortedKey<T>>, Typed {
-    private final T obj;
-    private final boolean isBuiltin;
-    private final Class<?> template;
-    private final int priority;
-
-    public SortedKey(Class<?> intf, T reader, Class<?> readerClass, int priority, boolean isBuiltin) {
-        this.obj = reader;
-        Class<?> t = Types.getTemplateParameterOfInterface(readerClass, intf);
-        this.template = t != null ? t : Object.class;
-        this.priority = priority;
-        this.isBuiltin = isBuiltin;
-    }
-
-    public SortedKey(Class<?> intf, T reader, Class<?> readerClass, boolean isBuiltin) {
-        this(intf, reader, readerClass, 5000, isBuiltin);
-    }
-
-    public SortedKey(Class<?> intf, T reader, Class<?> readerClass) {
-        this(intf, reader, readerClass, 5000, false);
-    }
+    
+    //...
 
     public int compareTo(SortedKey<T> tMessageBodyKey) {
         if (this == tMessageBodyKey) {
@@ -414,19 +391,13 @@ public class SortedKey<T> implements Comparable<SortedKey<T>>, Typed {
         }
     }
 
-    public Class<?> getType() {
-        return this.template;
-    }
-
-    public T getObj() {
-        return this.obj;
-    }
+    //...
 }
 ```
 
 优先级小，优先程度高。
 
-
+参考：https://stackoverflow.com/questions/33939418/execution-order-of-exceptionmapper
 
 
 

@@ -1,4 +1,4 @@
-###cRank( ) over( )
+###Rank( ) over( )
 
 The syntax of the `RANK()` function is as follows
 
@@ -142,5 +142,62 @@ where t1.rn > 1);
 ```sql
 delete from nayi224_180824 t where t.rowid not in
 (select max(rowid) from nayi224_180824 t1 group by t1.col_2, t1.col_3);
+```
+
+
+
+
+
+### spool用法
+
+官方文档：https://docs.oracle.com/cd/E11882_01/server.112/e16604/ch_twelve043.htm#SQPUG126
+
+Syntax
+
+SPO[OL] [*file_name*[.*ext*] [CRE[ATE] | REP[LACE] | APP[END]] | OFF | OUT]
+
+Stores query results in a file, or optionally sends the file to a printer.
+
+```sql
+SET SERVEROUTPUT ON FORMAT WRAPPED
+SET VERIFY OFF
+
+SET FEEDBACK OFF
+SET TERMOUT OFF
+
+column date_column new_value today_var
+select to_char(sysdate, 'yyyymmdd') date_column
+  from dual
+/
+DBMS_OUTPUT.ENABLE(1000000);
+
+SPOOL C:\output_&today_var..txt
+
+DECLARE
+   ab varchar2(10) := 'Raj';
+   cd varchar2(10);
+   a  number := 10;
+   c  number;
+   d  number; 
+BEGIN
+   c := a+10;
+   --
+   SELECT ab, c 
+     INTO cd, d 
+     FROM dual;
+   --
+   DBMS_OUTPUT.put_line('cd: '||cd);
+   DBMS_OUTPUT.put_line('d: '||d);
+END; 
+
+SPOOL OFF
+
+SET TERMOUT ON
+SET FEEDBACK ON
+SET VERIFY ON
+
+PROMPT
+PROMPT Done, please see file C:\output_&today_var..txt
+PROMPT
 ```
 

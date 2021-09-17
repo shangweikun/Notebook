@@ -277,6 +277,10 @@ https://docs.oracle.com/cd/B19306_01/server.102/b14200/queries003.htm
 
 
 
+***注意：*** 语句中的 `condition` 将会在递归完毕后，进行最终结果筛选
+
+
+
 1. 查询所有的子节点：
 
 ```sql
@@ -646,524 +650,6 @@ remap_tablespace=A1:B1 remap_tablespace=A2:B1
 remap_tablespace= ‘(A1:B1, A2:B1)'
 
 
-
-## <a href='https://oracle-base.com/articles/10g/oracle-data-pump-10g'>Help</a>
-
-The `HELP=Y` option displays the available parameters. The following output comes from 18c, but is edited to include the database version when the parameter was introduced.
-
-
-
-### expdp
-
-```shell
-$ expdp help=y
-
-Export: Release 18.0.0.0.0 - Production on Mon Jan 28 08:31:55 2019
-Version 18.3.0.0.0
-
-Copyright (c) 1982, 2018, Oracle and/or its affiliates.  All rights reserved.
-
-
-The Data Pump export utility provides a mechanism for transferring data objects
-between Oracle databases. The utility is invoked with the following command:
-
-   Example: expdp scott/tiger DIRECTORY=dmpdir DUMPFILE=scott.dmp
-
-You can control how Export runs by entering the 'expdp' command followed
-by various parameters. To specify parameters, you use keywords:
-
-   Format:  expdp KEYWORD=value or KEYWORD=(value1,value2,...,valueN)
-   Example: expdp scott/tiger DUMPFILE=scott.dmp DIRECTORY=dmpdir SCHEMAS=scott
-               or TABLES=(T1:P1,T1:P2), if T1 is partitioned table
-
-USERID must be the first parameter on the command line.
-
-------------------------------------------------------------------------------
-
-The available keywords and their descriptions follow. Default values are listed within square brackets.
-
-ABORT_STEP (12.1)
-Stop the job after it is initialized or at the indicated object.
-Valid values are -1 or N where N is zero or greater.
-N corresponds to the object's process order number in the master table.
-
-ACCESS_METHOD (12.1)
-Instructs Export to use a particular method to unload data.
-Valid keyword values are: [AUTOMATIC], DIRECT_PATH and EXTERNAL_TABLE.
-
-ATTACH (10.1)
-Attach to an existing job.
-For example, ATTACH=job_name.
-
-CLUSTER (11.2)
-Utilize cluster resources and distribute workers across the Oracle RAC [YES].
-
-COMPRESSION (10.2)
-Reduce the size of a dump file.
-Valid keyword values are: ALL, DATA_ONLY, [METADATA_ONLY] and NONE.
-
-COMPRESSION_ALGORITHM (12.1)
-Specify the compression algorithm that should be used.
-Valid keyword values are: [BASIC], LOW, MEDIUM and HIGH.
-
-CONTENT (10.1)
-Specifies data to unload.
-Valid keyword values are: [ALL], DATA_ONLY and METADATA_ONLY.
-
-DATA_OPTIONS (11.1)
-Data layer option flags.
-Valid keyword values are: GROUP_PARTITION_TABLE_DATA, VERIFY_STREAM_FORMAT and XML_CLOBS.
-
-DIRECTORY (12.2)
-Directory object to be used for dump and log files.
-
-DUMPFILE (10.1)
-Specify list of destination dump file names [expdat.dmp].
-For example, DUMPFILE=scott1.dmp, scott2.dmp, dmpdir:scott3.dmp.
-
-ENCRYPTION (11.1)
-Encrypt part or all of a dump file.
-Valid keyword values are: ALL, DATA_ONLY, ENCRYPTED_COLUMNS_ONLY, METADATA_ONLY and NONE.
-
-ENCRYPTION_ALGORITHM (11.1)
-Specify how encryption should be done.
-Valid keyword values are: [AES128], AES192 and AES256.
-
-ENCRYPTION_MODE (11.1)
-Method of generating encryption key.
-Valid keyword values are: DUAL, PASSWORD and [TRANSPARENT].
-
-ENCRYPTION_PASSWORD (10.2)
-Password key for creating encrypted data within a dump file.
-
-ENCRYPTION_PWD_PROMPT (12.1)
-Specifies whether to prompt for the encryption password [NO].
-Terminal echo will be suppressed while standard input is read.
-
-ESTIMATE (10.1)
-Calculate job estimates.
-Valid keyword values are: [BLOCKS] and STATISTICS.
-
-ESTIMATE_ONLY (10.1)
-Calculate job estimates without performing the export [NO].
-
-EXCLUDE (10.1)
-Exclude specific object types.
-For example, EXCLUDE=SCHEMA:"='HR'".
-
-FILESIZE (10.1)
-Specify the size of each dump file in units of bytes.
-
-FLASHBACK_SCN (10.1)
-SCN used to reset session snapshot.
-
-FLASHBACK_TIME (10.1)
-Time used to find the closest corresponding SCN value.
-
-FULL (10.1)
-Export entire database [NO].
-
-HELP (10.1)
-Display Help messages [NO].
-
-INCLUDE (10.1)
-Include specific object types.
-For example, INCLUDE=TABLE_DATA.
-
-JOB_NAME (10.1)
-Name of export job to create.
-
-KEEP_MASTER (12.1)
-Retain the master table after an export job that completes successfully [NO].
-
-LOGFILE (10.1)
-Specify log file name [export.log].
-
-LOGTIME (12.1)
-Specifies that messages displayed during export operations be timestamped.
-Valid keyword values are: ALL, [NONE], LOGFILE and STATUS.
-
-METRICS (12.1)
-Report additional job information to the export log file [NO].
-
-NETWORK_LINK (10.1)
-Name of remote database link to the source system.
-
-NOLOGFILE (10.1)
-Do not write log file [NO].
-
-PARALLEL (10.1)
-Change the number of active workers for current job.
-
-PARFILE (10.1)
-Specify parameter file name.
-
-QUERY (10.1)
-Predicate clause used to export a subset of a table.
-For example, QUERY=employees:"WHERE department_id > 10".
-
-REMAP_DATA (11.1)
-Specify a data conversion function.
-For example, REMAP_DATA=EMP.EMPNO:REMAPPKG.EMPNO.
-
-REUSE_DUMPFILES (11.1)
-Overwrite destination dump file if it exists [NO].
-
-SAMPLE (10.2)
-Percentage of data to be exported.
-
-SCHEMAS (10.1)
-List of schemas to export [login schema].
-
-SERVICE_NAME (11.2)
-Name of an active Service and associated resource group to constrain Oracle RAC resources.
-
-SOURCE_EDITION (11.2)
-Edition to be used for extracting metadata.
-
-STATUS (10.1)
-Frequency (secs) job status is to be monitored where
-the default [0] will show new status when available.
-
-TABLES (10.1)
-Identifies a list of tables to export.
-For example, TABLES=HR.EMPLOYEES,SH.SALES:SALES_1995.
-
-TABLESPACES (10.1)
-Identifies a list of tablespaces to export.
-
-TRANSPORTABLE (12.1)
-Specify whether transportable method can be used.
-Valid keyword values are: ALWAYS and [NEVER].
-
-TRANSPORT_FULL_CHECK (10.1)
-Verify storage segments of all tables [NO].
-
-TRANSPORT_TABLESPACES (10.1)
-List of tablespaces from which metadata will be unloaded.
-
-VERSION (10.1)
-Version of objects to export.
-Valid keyword values are: [COMPATIBLE], LATEST or any valid database version.
-
-VIEWS_AS_TABLES (12.1)
-Identifies one or more views to be exported as tables.
-For example, VIEWS_AS_TABLES=HR.EMP_DETAILS_VIEW.
-
-------------------------------------------------------------------------------
-
-The following commands are valid while in interactive mode.
-Note: abbreviations are allowed.
-
-ADD_FILE
-Add dumpfile to dumpfile set.
-
-CONTINUE_CLIENT
-Return to logging mode. Job will be restarted if idle.
-
-EXIT_CLIENT
-Quit client session and leave job running.
-
-FILESIZE
-Default filesize (bytes) for subsequent ADD_FILE commands.
-
-HELP
-Summarize interactive commands.
-
-KILL_JOB
-Detach and delete job.
-
-PARALLEL
-Change the number of active workers for current job.
-
-REUSE_DUMPFILES
-Overwrite destination dump file if it exists [NO].
-
-START_JOB
-Start or resume current job.
-Valid keyword values are: SKIP_CURRENT.
-
-STATUS
-Frequency (secs) job status is to be monitored where
-the default [0] will show new status when available.
-
-STOP_JOB
-Orderly shutdown of job execution and exits the client.
-Valid keyword values are: IMMEDIATE.
-
-STOP_WORKER
-Stops a hung or stuck worker.
-
-TRACE
-Set trace/debug flags for the current job.
-
-$
-```
-
-
-
-### impdp
-
-```shell
-$ impdp help=y
-
-Import: Release 18.0.0.0.0 - Production on Mon Jan 28 08:44:08 2019
-Version 18.3.0.0.0
-
-Copyright (c) 1982, 2018, Oracle and/or its affiliates.  All rights reserved.
-
-
-The Data Pump Import utility provides a mechanism for transferring data objects
-between Oracle databases. The utility is invoked with the following command:
-
-     Example: impdp scott/tiger DIRECTORY=dmpdir DUMPFILE=scott.dmp
-
-You can control how Import runs by entering the 'impdp' command followed
-by various parameters. To specify parameters, you use keywords:
-
-     Format:  impdp KEYWORD=value or KEYWORD=(value1,value2,...,valueN)
-     Example: impdp scott/tiger DIRECTORY=dmpdir DUMPFILE=scott.dmp
-
-USERID must be the first parameter on the command line.
-
-------------------------------------------------------------------------------
-
-The available keywords and their descriptions follow. Default values are listed within square brackets.
-
-ABORT_STEP (12.1)
-Stop the job after it is initialized or at the indicated object.
-Valid values are -1 or N where N is zero or greater.
-N corresponds to the object's process order number in the master table.
-
-ACCESS_METHOD (12.1)
-Instructs Import to use a particular method to load data.
-Valid keyword values are: [AUTOMATIC], CONVENTIONAL, DIRECT_PATH,
-EXTERNAL_TABLE, and INSERT_AS_SELECT.
-
-ATTACH (10.1)
-Attach to an existing job.
-For example, ATTACH=job_name.
-
-CLUSTER (11.2)
-Utilize cluster resources and distribute workers across the Oracle RAC [YES].
-
-CONTENT (10.1)
-Specifies data to load.
-Valid keywords are: [ALL], DATA_ONLY and METADATA_ONLY.
-
-DATA_OPTIONS (11.1)
-Data layer option flags.
-Valid keywords are: DISABLE_APPEND_HINT, ENABLE_NETWORK_COMPRESSION,
-REJECT_ROWS_WITH_REPL_CHAR, SKIP_CONSTRAINT_ERRORS, CONTINUE_LOAD_ON_FORMAT_ERROR,
-TRUST_EXISTING_TABLE_PARTITIONS and VALIDATE_TABLE_DATA.
-
-DIRECTORY (10.1)
-Directory object to be used for dump, log and SQL files.
-
-DUMPFILE (10.1)
-List of dump files to import from [expdat.dmp].
-For example, DUMPFILE=scott1.dmp, scott2.dmp, dmpdir:scott3.dmp.
-
-ENCRYPTION_PASSWORD (10.2)
-Password key for accessing encrypted data within a dump file.
-Not valid for network import jobs.
-
-ENCRYPTION_PWD_PROMPT (12.1)
-Specifies whether to prompt for the encryption password [NO].
-Terminal echo is suppressed while standard input is read.
-
-ESTIMATE (10.1)
-Calculate network job estimates.
-Valid keywords are: [BLOCKS] and STATISTICS.
-
-EXCLUDE (10.1)
-Exclude specific object types.
-For example, EXCLUDE=SCHEMA:"='HR'".
-
-FLASHBACK_SCN (10.1)
-SCN used to reset session snapshot.
-
-FLASHBACK_TIME (10.1)
-Time used to find the closest corresponding SCN value.
-
-FULL (10.1)
-Import everything from source [YES].
-
-HELP (10.1)
-Display help messages [NO].
-
-INCLUDE (10.1)
-Include specific object types.
-For example, INCLUDE=TABLE_DATA.
-
-JOB_NAME (10.1)
-Name of import job to create.
-
-KEEP_MASTER (12.1)
-Retain the master table after an import job that completes successfully [NO].
-
-LOGFILE (10.1)
-Log file name [import.log].
-
-LOGTIME (12.1)
-Specifies that messages displayed during import operations be timestamped.
-Valid keyword values are: ALL, [NONE], LOGFILE and STATUS.
-
-MASTER_ONLY (12.1)
-Import just the master table and then stop the job [NO].
-
-METRICS (12.1)
-Report additional job information to the import log file [NO].
-
-NETWORK_LINK (10.1)
-Name of remote database link to the source system.
-
-NOLOGFILE (10.1)
-Do not write log file [NO].
-
-PARALLEL (10.1)
-Change the number of active workers for current job.
-
-PARFILE (10.1)
-Specify parameter file.
-
-PARTITION_OPTIONS (11.1)
-Specify how partitions should be transformed.
-Valid keywords are: DEPARTITION, MERGE and [NONE].
-
-QUERY (10.1)
-Predicate clause used to import a subset of a table.
-For example, QUERY=employees:"WHERE department_id > 10".
-
-REMAP_DATA (11.1)
-Specify a data conversion function.
-For example, REMAP_DATA=EMP.EMPNO:REMAPPKG.EMPNO.
-
-REMAP_DATAFILE (10.1)
-Redefine data file references in all DDL statements.
-
-REMAP_SCHEMA (10.1)
-Objects from one schema are loaded into another schema.
-
-REMAP_TABLE (11.1)
-Table names are remapped to another table.
-For example, REMAP_TABLE=HR.EMPLOYEES:EMPS.
-
-REMAP_TABLESPACE (10.1)
-Tablespace objects are remapped to another tablespace.
-
-REUSE_DATAFILES (10.1)
-Tablespace will be initialized if it already exists [NO].
-
-SCHEMAS (10.1)
-List of schemas to import.
-
-SERVICE_NAME (11.2)
-Name of an active service and associated resource group to constrain Oracle RAC resources.
-
-SKIP_UNUSABLE_INDEXES (10.1)
-Skip indexes that were set to the Index Unusable state.
-
-SOURCE_EDITION (11.2)
-Edition to be used for extracting metadata.
-
-SQLFILE (10.1)
-Write all the SQL DDL to a specified file.
-
-STATUS (10.1)
-Frequency (secs) job status is to be monitored where
-the default [0] will show new status when available.
-
-STREAMS_CONFIGURATION (10.1)
-Enable the loading of Streams metadata [YES].
-
-TABLE_EXISTS_ACTION (10.1)
-Action to take if imported object already exists.
-Valid keywords are: APPEND, REPLACE, [SKIP] and TRUNCATE.
-
-TABLES (10.1)
-Identifies a list of tables to import.
-For example, TABLES=HR.EMPLOYEES,SH.SALES:SALES_1995.
-
-TABLESPACES (10.1)
-Identifies a list of tablespaces to import.
-
-TARGET_EDITION (11.2)
-Edition to be used for loading metadata.
-
-TRANSFORM (10.1)
-Metadata transform to apply to applicable objects.
-Valid keywords are: DISABLE_ARCHIVE_LOGGING, INMEMORY, INMEMORY_CLAUSE,
-LOB_STORAGE, OID, PCTSPACE, SEGMENT_ATTRIBUTES, SEGMENT_CREATION,
-STORAGE, and TABLE_COMPRESSION_CLAUSE.
-
-TRANSPORTABLE (12.1)
-Options for choosing transportable data movement.
-Valid keywords are: ALWAYS and [NEVER].
-Only valid in NETWORK_LINK mode import operations.
-
-TRANSPORT_DATAFILES (10.1)
-List of data files to be imported by transportable mode.
-
-TRANSPORT_FULL_CHECK (10.1)
-Verify storage segments of all tables [NO].
-Only valid in NETWORK_LINK mode import operations.
-
-TRANSPORT_TABLESPACES (10.1)
-List of tablespaces from which metadata is loaded.
-Only valid in NETWORK_LINK mode import operations.
-
-VERSION (10.1)
-Version of objects to import.
-Valid keywords are: [COMPATIBLE], LATEST, or any valid database version.
-Only valid for NETWORK_LINK and SQLFILE.
-
-VIEWS_AS_TABLES (12.1)
-Identifies one or more views to be imported as tables.
-For example, VIEWS_AS_TABLES=HR.EMP_DETAILS_VIEW.
-Note that in network import mode, a table name is appended
-to the view name.
-
-------------------------------------------------------------------------------
-
-The following commands are valid while in interactive mode.
-Note: abbreviations are allowed.
-
-CONTINUE_CLIENT
-Return to logging mode. Job will be restarted if idle.
-
-EXIT_CLIENT
-Quit client session and leave job running.
-
-HELP
-Summarize interactive commands.
-
-KILL_JOB
-Detach and delete job.
-
-PARALLEL
-Change the number of active workers for current job.
-
-START_JOB
-Start or resume current job.
-Valid keywords are: SKIP_CURRENT.
-
-STATUS
-Frequency (secs) job status is to be monitored where
-the default [0] will show new status when available.
-
-STOP_JOB
-Orderly shutdown of job execution and exits the client.
-Valid keywords are: IMMEDIATE.
-
-STOP_WORKER
-Stops a hung or stuck worker.
-
-TRACE
-Set trace/debug flags for the current job.
-
-$
-```
 
 
 
@@ -1725,6 +1211,19 @@ set fmoney1 =fmoney2;
 
 ***使用唯一性的group by 语句操作亦可以***
 
+***通过视图创建主键***
+
+>Creating a View with Constraints: Example The following statement creates a
+>restricted view of the sample table hr.employees and defines a unique constraint on
+>the email view column and a primary key constraint for the view on the emp_id
+>view column:
+>CREATE VIEW emp_sal (emp_id, last_name,
+>email UNIQUE RELY DISABLE NOVALIDATE,
+>CONSTRAINT id_pk PRIMARY KEY (emp_id) RELY DISABLE NOVALIDATE)
+>AS SELECT employee_id, last_name, email FROM employees;
+
+
+
 
 
 ```sql
@@ -1738,7 +1237,7 @@ where exists(select 1 from TB b where b.id=a.id)
 
 
 
-### Pivot 和 Unpivot
+### Pivot 和 Unpivot - 行列转制
 
 pivot语句
 
@@ -1820,3 +1319,149 @@ ALTER TABLE target_table
 ```
 
 参考：https://www.enterprisedb.com/edb-docs/d/edb-postgres-advanced-server/user-guides/database-compatibility-for-oracle-developers-guide/9.6/Database_Compatibility_for_Oracle_Developers_Guide_v9.6.1.109.html
+
+
+
+
+
+### Oracle 周函数
+
+相关周的一些参数说明：
+
+```sql
+WW  Week of year (1-53) where week 1 starts on the first day of the year and continues to the seventh day of the year.
+W   Week of month (1-5) where week 1 starts on the first day of the month and ends on the seventh.
+IW  Week of year (1-52 or 1-53) based on the ISO standard.
+```
+
+鸣谢：Tom https://asktom.oracle.com/pls/apex/asktom.search?tag=week-of-year-in-sql-confusing
+
+
+
+### AWR报告怎么看？
+
+鸣谢：smileNicky https://www.jianshu.com/p/e73ec7ec67d6
+
+#### load_profile
+
+
+
+**load_profile**：指标主要用来显示当前系统的一些指示性能的总体参数
+
+**Redo_size**：用来显示平均每秒的日志尺寸和平均每个事务的日志尺寸
+
+
+
+如图，平均每秒的事务数Transactions非常小，说明系统压力非常小，一般来说Transactions不超过200都是正常的，或者200左右都是正常的，超过1000就是非常繁忙了，再看看平均每秒的日志尺寸是4位数的，平均每个事务的日志尺寸是5位数的，说明了系统访问不是很频繁，而单个业务是比较复杂的，如果反过来，平均每秒日志尺寸比平均每秒事务日志尺寸大很多，说明系统访问很频繁，而业务比较简单，不需要响应很久
+
+
+
+### efficiency percentages
+
+
+
+efficiency percentages是一些命中率指标。Buffer Hint、Library Hint等表示SGA(System global area)的命中率；Soft Parse指标表示共享池的软解析率，如果小于90%，就说明存在未绑定变量的情况
+
+
+
+
+
+
+
+### Oracle如果没有数据，如何展示为一个特定的数据呢？
+
+通过 ***外链接*** 的方式；
+
+用 **一个绝对存在的数值** 左连接可能为空的数值；
+
+```sql
+select t1.month, count(D_DATEMONTH) as sum,decode('YC','YC','测试')as type
+from 
+(select  to_char(sysdate, 'YYYY-MM' )as month  from dual )t1 left join YCDIMISSION t2
+on t1.month=t2.D_DATEMONTH
+group by t1.month
+```
+
+
+
+
+
+### Oracle 对象最长字段
+
+ >##### Long Identifiers
+ >
+ >The maximum length of identifiers is increased to 128 bytes for most identifiers, up from 30 bytes in previous releases.
+ >
+ >Providing longer identifiers gives customers greater flexibility in defining their naming schemes, such as longer and more expressive table names. Having longer identifiers also enables object name migration between databases with different character sets, such as Thai to Unicode.
+
+参考：https://docs.oracle.com/en/database/oracle/oracle-database/12.2/newft/new-features.html#GUID-E82CA1F1-09C0-47DC-BC78-C984EC62BAF2
+
+
+
+
+
+# ROWID
+
+
+
+确切的说，当你是全新的数据库时，ROWID是递增的
+而当一旦有了删除动作，ROWID就不会全是递增的
+
+
+
+[oracle文档]: https://docs.oracle.com/cd/B19306_01/server.102/b14200/pseudocolumns008.htm	"rowid相关"
+[jdbc文档]: https://docs.oracle.com/database/121/JAJDB/oracle/sql/ROWID.html	"rowid类"
+
+[stack overflow]: https://stackoverflow.com/questions/33629074/how-to-find-the-partition-by-rowid-in-oracle	"rowid获取分区名称"
+
+
+
+
+
+### AND 和 OR的优先级
+
+| 运算符                                     | 级别 |
+| ------------------------------------------ | ---- |
+| 算术运算符(即‘+’,‘-’，‘*’,‘/’)             | 1    |
+| 连接运算符（即‘\|\|’）                     | 2    |
+| 比较运算符（即‘>’，‘>=’，‘<’，‘<=’，‘<>’） | 3    |
+| Is [not] null,[not] like,[not] in          | 4    |
+| [not] between-and                          | 5    |
+| not                                        | 6    |
+| and                                        |      |
+| or                                         |      |
+
+参考：https://docs.oracle.com/cd/E57185_01/ESTUG/apds03s01.html
+
+
+
+
+
+### 删除分区操作
+
+
+
+删除或清理分区操作
+
+```sql
+ALTER TABLE BUSTB_TESTRESULT DROP PARTITION RESULT_PART_201412; 
+ALTER TABLE BUSTB_TESTRESULT TRUNCATE PARTITION RESULT_PART_201412; 
+
+
+ALTER TABLE BUSTB_TESTRESULT DROP SUBPARTITION RESULT_PART_201412_0; 
+ALTER TABLE BUSTB_TESTRESULT TRUNCATE SUBPARTITION RESULT_PART_201412_0; 
+
+ALTER TABLE sales DROP PARTITION FOR(TO_DATE('01-SEP-2007','dd-MON-yyyy'));
+```
+
+
+
+># Dropping Interval Partitions
+>
+>You can drop interval partitions in an interval-partitioned table. This operation drops the data for the interval only and leaves the interval definition in tact. If data is inserted in the interval just dropped, then the database again creates an interval partition.
+>
+>You can also drop range partitions in an interval-partitioned table. The rules for dropping a range partition in an interval-partitioned table follow the rules for dropping a range partition in a range-partitioned table. If you drop a range partition in the middle of a set of range partitions, then the lower boundary for the next range partition shifts to the lower boundary of the range partition you just dropped. You cannot drop the highest range partition in the range-partitioned section of an interval-partitioned table.
+>
+>The following example drops the September 2007 interval partition from the `sales` table. There are only local indexes so no indexes are invalidated.
+
+https://docs.oracle.com/database/121/VLDBG/GUID-09F5641F-821D-4971-81F8-583F7CD9CAA2.htm

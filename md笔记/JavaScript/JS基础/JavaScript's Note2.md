@@ -894,7 +894,102 @@ const x = 2;       // 允许
 
 ## 提升
 
-通过 const 定义的变量不会被提升到顶端。
+Hoisting 是 JavaScript 将所有声明提升到当前作用域顶部的默认行为（提升到当前脚本或当前函数的顶部）。
+
+用 let 或 const 声明的变量和常量不会被提升！
 
 
 
+```js
+var x = 5; // 初始化 x
+ 
+elem = document.getElementById("demo"); // 查找元素
+elem.innerHTML = x + " " + y;           // 显示 x 和 y
+ 
+var y = 7; // 初始化 y 
+```
+
+因为只有声明（var y）而不是初始化（=7）被提升到顶部。
+
+由于 hoisting，y 在其被使用前已经被声明，但是由于未对初始化进行提升，y 的值仍是未定义
+
+
+
+
+
+# JavaScript Use Strict
+
+**"use strict"; 定义 JavaScript 代码应该以“严格模式”执行。**
+
+以下版本的浏览器支持严格模式：
+
+- 版本 10 以后的 IE
+- 版本 4 以后的 Firefox
+- 版本 13 以后的 Chrome
+- 版本 5.1 以后的 Safari
+- 版本 12 以后的 Opera
+
+
+
+## 声明严格模式
+
+通过在脚本或函数的开头添加 "use strict"; 来声明严格模式。
+
+在脚本开头进行声明，拥有全局作用域（脚本中的所有代码均以严格模式来执行）：
+
+```js
+"use strict";
+myFunction();
+
+function myFunction() {
+     y = 3.14;   // 这会引发错误，因为 y 尚未声明
+}
+```
+
+```js
+x = 3.14;       // 这不会引发错误
+myFunction();
+
+function  myFunction() {
+	"use strict";
+	 y = 3.14;   // 这会引发错误
+}
+```
+
+* 在不声明对象的情况下使用对象也是不允许的
+* 删除变量（或对象）是不允许的
+
+* 删除函数是不允许的
+* 重复参数名是不允许的
+* 八进制数值文本是不允许的
+* 转义字符是不允许的
+* 写入只读属性是不允许的
+* 写入只能获取的属性是不允许的
+* 删除不可删除的属性是不允许的
+* 字符串 "eval" 不可用作变量
+* 字符串 "arguments" 不可用作变量
+* with 语句是不允许的
+* 处于安全考虑，不允许 eval() 在其被调用的作用域中创建变量
+* 在类似 f() 的函数调用中，this 的值是全局对象。在严格模式中，现在它成为了 undefined
+
+
+
+## 对未来的保障
+
+严格模式中不允许使用为未来预留的关键词。它们是：
+
+- implements
+- interface
+- let
+- package
+- private
+- protected
+- public
+- static
+- yield
+
+
+
+## 警告
+
+"use strict" 指令只能在脚本或函数的*开头*被识别。
