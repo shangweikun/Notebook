@@ -1465,3 +1465,28 @@ ALTER TABLE sales DROP PARTITION FOR(TO_DATE('01-SEP-2007','dd-MON-yyyy'));
 >The following example drops the September 2007 interval partition from the `sales` table. There are only local indexes so no indexes are invalidated.
 
 https://docs.oracle.com/database/121/VLDBG/GUID-09F5641F-821D-4971-81F8-583F7CD9CAA2.htm
+
+
+
+
+
+### sysdate日期加减操作
+
+加法 
+select sysdate,add_months(sysdate,12) from dual;        --加1年 
+select sysdate,add_months(sysdate,1) from dual;        --加1月 
+
+
+
+减法 
+select sysdate,add_months(sysdate,-12) from dual;        --减1年 
+select sysdate,add_months(sysdate,-1) from dual;        --减1月 
+
+
+
+sysdate+1 加一天
+sysdate+1/24 加1小时 
+sysdate+1/(24*60) 加1分钟
+sysdate+1/(24*60*60) 加1秒钟
+
+https://blog.csdn.net/HyEidolon/article/details/8290724
